@@ -9,6 +9,8 @@ import Signup from './pages/Signup'
 import Login from './pages/Login';
 import StudentProfile from './pages/StudentProfile';
 import Header from './components/Header'
+import Show from './pages/Show'
+import New from './pages/New'
 
 export const GlobalCtx = React.createContext(null)
 
@@ -16,13 +18,22 @@ function App() {
   //State to hold our profiles
   const [studentProfile, setStudentProfile] = React.useState([])
 
-  //State to hold form data
-  const [createForm, setCreateForm] = React.useState({
-    student_id: "",
-    name: "",
-    address: ""
-  })
+  const selectedStudentProfile = (profile) => {
+    setStudentProfile(profile)
+  }
 
+  //emptyProfile
+    const emptyProfile = {
+      student_id: "",
+      name: "",
+      address: ""
+    }
+
+  const [showProfile, setShowProfile] = React.useState(emptyProfile)
+
+  const selectedProfile = (profile) => {
+    setShowProfile(profile)
+  }
 
   //Create a function to make API call to get notices
   const getStudentProfile = async () => {
@@ -36,53 +47,24 @@ function App() {
     getStudentProfile()
   }, [])
 
-  //Renders the jsx for when the profiles are loaded
-  // const loaded = () => (
-  //   <>
-  //     {studentProfile.map((profile) => {
-  //       return (
-  //         <div>
-  //           <h1>{profile.student_id}</h1>
-  //           <h1>{profile.name}</h1>
-  //           <h3>{profile.address}</h3>
-  //           <button onClick={async () => {
-  //             //Make delete request
-  //             await fetch("https://jlzenproject4api.herokuapp.com/student_profiles/" + profile.id, {
-  //               method: "delete"
-  //             })
-  //             //get updated list of student profiles
-  //             setStudentProfile()
-  //           }}>Delete</button>
-  //         </div>
-  //       );
-  //     })}
-  //   </>
-  // );
-
-  
-
 //our handleChange function for our create form
-  const createChange = (event) => {
-    setCreateForm({...createForm, [event.target.name]: event.target.value})
-  }
+  // const createChange = (event) => {
+  //   setCreateForm({...createForm, [event.target.name]: event.target.value})
+  // }
 
 //our handleCreate function for when the form is submitted
   const handleCreate = async(event) => {
     event.preventDefault() //prevent page refresh
-    await fetch("https://jlzenproject4api.herokuapp.com/student_profiles", {
+    fetch("https://jlzenproject4api.herokuapp.com/student_profiles", {
       method: "post",
       headers: {
         "Content-Type":"application/json" 
       },
-      body: JSON.stringify(createForm)
-    })
+      body: JSON.stringify(event),
+    }).then((response) => {
     //fetching an updated list of notices
     getStudentProfile()
-    setCreateForm({
-      student_id: "",
-      name: "",
-      address: ""
-    })
+  })
   }
 
   return (
@@ -94,8 +76,17 @@ function App() {
           <Route exact
             path="/home"
             render={(rp) => (
-              <Home {...rp} studentProfile={studentProfile}/>
+              <Home {...rp} studentProfile={studentProfile} selectedStudentProfile={selectedStudentProfile}/>
           )}/>
+          <Route exact path="/home/new"
+            render={(rp) => (
+              <New {...rp} label="create" selectedProfile={selectedProfile} handleSubmit={handleCreate} emptyProfile={emptyProfile}/>
+            )}/>
+          {/* <Route exact
+            path="/home/:id"
+            render={(rp) => (
+              <Show {...rp} studentProfile={studentProfile} selectedStudentProfile={selectedStudentProfile}/>
+          )}/> */}
         </Switch>
         </BrowserRouter>
       </main>
