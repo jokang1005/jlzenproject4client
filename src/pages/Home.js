@@ -1,7 +1,6 @@
 import React from 'react'
 import Header from '../components/Header'
 import Jumbotron from 'react-bootstrap/Jumbotron'
-import Cards from '../components/Cards'
 import { PopoverTitle } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
@@ -10,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 const Home = (props) => {
     const {studentProfile} = props
-
+    console.log(props)
     
     const loaded = () => (
         <>
@@ -35,11 +34,12 @@ const Home = (props) => {
                     }}>Edit</Button>
                     <Button variant="danger" onClick={async () => {
   //             //Make delete request
-                        await fetch(`https://jlzenproject4api.herokuapp.com/student_profiles/home/${profile.id}`,
-                        {method: "DELETE"})
-                        
+                        await fetch(`https://jlzenproject4api.herokuapp.com/student_profiles/${profile.id}`,
+                        {method: "delete"})
                         props.history.push(`/home`)
+                        props.getStudentProfile()
                         }}>Delete</Button>
+
                 </Card>
               </>
             );

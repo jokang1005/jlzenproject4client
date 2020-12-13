@@ -2,15 +2,16 @@ import React from 'react'
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Route, Link, Switch} from 'react-router-dom'
+import {Route, BrowserRouter, Switch} from 'react-router-dom'
 import Home from './pages/Home'
-import {BrowserRouter} from 'react-router-dom'
 import Signup from './pages/Signup'
 import Login from './pages/Login';
 import StudentProfile from './pages/StudentProfile';
 import Header from './components/Header'
 import Show from './pages/Show'
 import New from './pages/New'
+
+
 
 export const GlobalCtx = React.createContext(null)
 
@@ -53,70 +54,58 @@ function App() {
   // }
 
 //our handleCreate function for when the form is submitted
-  const handleCreate = async(event) => {
-    event.preventDefault() //prevent page refresh
-    fetch("https://jlzenproject4api.herokuapp.com/student_profiles", {
+  const handleCreate = (newProfile) => {
+    fetch("https://jlzenproject4api.herokuapp.com/student_profiles/", {
       method: "post",
       headers: {
-        "Content-Type":"application/json" 
+        "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newProfile),
+        }).then(() => {
+          getStudentProfile();
+        });
+      };
+
+  const handleUpdate = (event) => {
+    fetch(`https://jlzenproject4api.herokuapp.com/student_profiles/${event.id}`, {
+      method: "put",
+      headers: {
+        "Content-Type":"application/json",
       },
       body: JSON.stringify(event),
-    }).then((response) => {
-    //fetching an updated list of notices
-    getStudentProfile()
-  })
+      }).then(() => {
+        getStudentProfile()
+      })
   }
 
   return (
     <div className="App">
+      <BrowserRouter>
       <Header/>
-      <main>
-        <BrowserRouter>
         <Switch>
           <Route exact
             path="/home"
             render={(rp) => (
-              <Home {...rp} studentProfile={studentProfile} selectedStudentProfile={selectedStudentProfile}/>
+              <Home {...rp} studentProfile={studentProfile} getStudentProfile={getStudentProfile} selectedStudentProfile={selectedStudentProfile}/>
           )}/>
+
           <Route exact path="/home/new"
             render={(rp) => (
-              <New {...rp} label="create" selectedProfile={selectedProfile} handleSubmit={handleCreate} emptyProfile={emptyProfile}/>
-            )}/>
-          {/* <Route exact
-            path="/home/:id"
+              <New {...rp} label="create" handleSubmit={handleCreate} emptyProfile={emptyProfile}/>
+          )}/>
+
+          <Route exact path="/home/edit"
             render={(rp) => (
-              <Show {...rp} studentProfile={studentProfile} selectedStudentProfile={selectedStudentProfile}/>
-          )}/> */}
+              <New {...rp} label="update" selectedProfile={selectedProfile} handleSubmit={handleUpdate} />
+          )}/>
+
+            <Route exact
+              path="/home/:id"
+              render={(rp) => (
+                <Show {...rp} showProflie={showProfile} studentProfile={studentProfile} selectedStudentProfile={selectedStudentProfile}/>
+          )}/>
         </Switch>
         </BrowserRouter>
-      </main>
-      {/* <h1>Create Notice</h1>
-      <form onSubmit={handleCreate}>
-        <input 
-          type="text" 
-          name="title" 
-          value={createForm.title} 
-          onChange={createChange}
-        />
-        <input 
-          type="text" 
-          name="author" 
-          value={createForm.author} 
-          onChange={createChange}
-        />
-        <input 
-          type="text" 
-          name="phone"
-          value={createForm.phone} 
-          onChange={createChange}
-        />
-        <input 
-          type="submit" 
-          value="Create Notice" 
-          />
-      </form>
-      <h1>Student Profiles</h1>
-      {studentProfile.length > 0 ? loaded() : <h3>there are no student profiles</h3>} */}
     </div>
   );
 }
