@@ -37,27 +37,27 @@ function App() {
   }, [])
 
   //Renders the jsx for when the profiles are loaded
-  const loaded = () => (
-    <>
-      {studentProfile.map((profile) => {
-        return (
-          <div>
-            <h1>{profile.student_id}</h1>
-            <h1>{profile.name}</h1>
-            <h3>{profile.address}</h3>
-            <button onClick={async () => {
-              //Make delete request
-              await fetch("https://jlzenproject4api.herokuapp.com/student_profiles/" + profile.id, {
-                method: "delete"
-              })
-              //get updated list of student profiles
-              setStudentProfile()
-            }}>Delete</button>
-          </div>
-        );
-      })}
-    </>
-  );
+  // const loaded = () => (
+  //   <>
+  //     {studentProfile.map((profile) => {
+  //       return (
+  //         <div>
+  //           <h1>{profile.student_id}</h1>
+  //           <h1>{profile.name}</h1>
+  //           <h3>{profile.address}</h3>
+  //           <button onClick={async () => {
+  //             //Make delete request
+  //             await fetch("https://jlzenproject4api.herokuapp.com/student_profiles/" + profile.id, {
+  //               method: "delete"
+  //             })
+  //             //get updated list of student profiles
+  //             setStudentProfile()
+  //           }}>Delete</button>
+  //         </div>
+  //       );
+  //     })}
+  //   </>
+  // );
 
   
 
@@ -89,11 +89,15 @@ function App() {
     <div className="App">
       <Header/>
       <main>
+        <BrowserRouter>
         <Switch>
-          <Route exact path="/students" render={(rp) => (
-            <Home {...rp} profiles={profiles} />
+          <Route exact
+            path="/home"
+            render={(rp) => (
+              <Home {...rp} studentProfile={studentProfile}/>
           )}/>
         </Switch>
+        </BrowserRouter>
       </main>
       {/* <h1>Create Notice</h1>
       <form onSubmit={handleCreate}>

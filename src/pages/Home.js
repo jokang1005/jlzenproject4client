@@ -5,25 +5,33 @@ import Cards from '../components/Cards'
 import { PopoverTitle } from 'react-bootstrap'
 
 const Home = (props) => {
-    const {profiles} = props
+    const {studentProfile} = props
 
-    return (
-        <div>
-            <h1>Student Profiles</h1>
-            <div>
-                {profiles.map((profile) => {
-                    <div>
-                        <h2>Student ID: {profile.student_id}</h2>
-                        <h2>Student Name: {profile.name}</h2>
-                        <h3>Student Address: {profile.address}</h3>
-                        
-                    </div>
-                }
-                )}       
-            </div>
-                
-        </div>
-    )
+    const loaded = () => (
+        <>
+              <h1>Student Profiles</h1>
+          {studentProfile.map((profile) => {
+            return (
+                <div>
+                <h1>Student ID:{profile.student_id}</h1>
+                <h1>Student Name: {profile.name}</h1>
+                <h3>Student Address: {profile.address}</h3>
+                {/* <button onClick={async () => {
+                  //Make delete request
+                  await fetch("https://jlzenproject4api.herokuapp.com/student_profiles/" + profile.id, {
+                    method: "delete"
+                  })
+                  //get updated list of student profiles
+                  setStudentProfile()
+                }}>Delete</button> */}
+              </div>
+            );
+          })}
+        </>
+      );
+      return(
+      loaded()
+      )
 }
 
 export default Home;
