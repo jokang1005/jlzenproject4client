@@ -29,6 +29,7 @@ const Header = (props) => {
                 <Nav.Link href="/login">Login</Nav.Link>
             </Nav>
         </Navbar>
+        
         </>
     )
 
